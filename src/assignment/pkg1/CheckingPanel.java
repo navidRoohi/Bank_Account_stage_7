@@ -68,6 +68,8 @@ public class CheckingPanel extends JPanel implements Serializable {
     public CheckingPanel() {
         
         checkingAccountObj = new CheckingAccount(initBalance);
+        public static boolean ifSaved = false;
+ public static void chooseFile(int ioOption);
 
         form = new DecimalFormat("$##,##0.00;($##,##0.00)");
 
@@ -367,7 +369,7 @@ public class CheckingPanel extends JPanel implements Serializable {
    }
      
      
-   public  void writeElements() 
+   public void writeElements() 
    {  
         chooseFile(2);
         
