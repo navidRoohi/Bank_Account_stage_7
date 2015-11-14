@@ -4,6 +4,8 @@ import javax.swing.JOptionPane;
 import java.util.Date;
 import javax.swing.*;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 /**
  *
  * @author navidroohibroojeni
@@ -25,7 +27,32 @@ public class Main {
     public static void main(String[] args) {
 
         frame = new JFrame("Hello");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent ev) {
+                
+      int response  = JOptionPane.showConfirmDialog(null, "Do you want to Save ? ", "Confirm",
+               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+               
+            if (response == JOptionPane.NO_OPTION) {
+                          frame.dispose();
+                    } else if (response == JOptionPane.YES_OPTION) {
+                            
+                        CheckingPanel obj =  new CheckingPanel();
+                        obj.r
+                       
+                        
+                 } else if (response == JOptionPane.CLOSED_OPTION) {
+                             frame.dispose();
+                 }
+  
+    
+            }
+        });
+
+   
+        
         panel = new CheckingPanel();
         frame.getContentPane().add(panel);
         frame.pack();
