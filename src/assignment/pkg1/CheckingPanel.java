@@ -22,7 +22,7 @@ import java.text.DecimalFormat;
 public class CheckingPanel extends JPanel implements Serializable {
     
     // declear the file location that needs to write or read from 
-    public static String filename = "/Users/navidroohibroojeni/Desktop/JAVA-DB-CALSS/lplp.dat";
+    public static String filename = "/Users/navidroohibroojeni/Desktop/JAVA-DB-CLASS/lplp.dat";
 
 
     double totalDeposit;
@@ -53,9 +53,8 @@ public class CheckingPanel extends JPanel implements Serializable {
     static String name = Main.getBalanceName();
     static double initBalance = Main.getInitialBalance();
 
-    CheckingAccount  checkingAccountObj = new CheckingAccount(initBalance);
-     CheckingAccount newObj  = new CheckingAccount(initBalance);
-    
+    public static CheckingAccount checkingAccountObj;
+
     
     JTextArea text = new JTextArea();
 
@@ -68,6 +67,7 @@ public class CheckingPanel extends JPanel implements Serializable {
      */
     public CheckingPanel() {
         
+        checkingAccountObj = new CheckingAccount(initBalance);
 
         form = new DecimalFormat("$##,##0.00;($##,##0.00)");
 
@@ -298,11 +298,10 @@ public class CheckingPanel extends JPanel implements Serializable {
             if (source == radio5){
                 // read from file goes here:
                 
-               //  readElements();
+                     readElements();
             }
             
             if (source == radio6){
-                // write to file goes here:
                 writeElements();
                 
    
@@ -356,14 +355,9 @@ public class CheckingPanel extends JPanel implements Serializable {
 			FileInputStream fis = new FileInputStream(filename); 
 			ObjectInputStream in = new ObjectInputStream(fis);
                         
-                        String eCountObj = (String)in.readObject();
                         
-                        System.out.println("count of objects in file = "+ eCountObj.length());
-                        for (int i = 0; i < eCountObj.length(); i++)
-                        {
-                                System.out.println("reading object "+ i);
-			//	checkingAccountObj.
-                        }
+                        checkingAccountObj = (CheckingAccount)in.readObject();
+                        
 			in.close();
 		}	
 		catch(ClassNotFoundException | IOException e)	
@@ -382,9 +376,7 @@ public class CheckingPanel extends JPanel implements Serializable {
 			FileOutputStream fos = new FileOutputStream(filename);   
 			ObjectOutputStream out = new  ObjectOutputStream(fos);
                         
-                        for (int i=0; i<newObj.transCount;i++ ){
-                            out.write(newObj.getTrans(i));
-                        }
+                        out.writeObject(checkingAccountObj);
                         
                         out.close();
 		}	
