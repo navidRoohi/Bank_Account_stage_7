@@ -18,7 +18,6 @@ public class Main {
     static int transactionCode;
     static double currentServiceCharge;
 
-    static String name;
 
     public static CheckingPanel panel;
 
@@ -28,8 +27,6 @@ public class Main {
 
         frame = new JFrame("Hello");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
- 
-        
 
         frame.addWindowListener(new WindowAdapter() {
             
@@ -98,9 +95,9 @@ public class Main {
         return initBalance;
     }
 
-    public static String getBalanceName() {
+   public static String getBalanceName() {
         String input = JOptionPane.showInputDialog("Enter the Name: ");
-        name = input;
+         String name = input;
         return name;
     }
 

@@ -1,6 +1,7 @@
 
 package assignment.pkg1;
 
+import java.io.Serializable;
 
 /**
  *
@@ -8,10 +9,15 @@ package assignment.pkg1;
  */
 
 
-public class Account {
+public class Account implements Serializable{
     
     protected String name;
     protected double balance;
+    
+    
+    public Account(){
+        
+    }
 
     public Account(double initBalance){
         balance = initBalance;

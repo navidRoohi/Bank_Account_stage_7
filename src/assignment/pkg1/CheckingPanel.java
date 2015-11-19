@@ -49,11 +49,13 @@ public class CheckingPanel extends JPanel implements Serializable {
     String transaction;
     double currentServiceCharge;
     int transactionCode;
-
+    
+    
+    
     static String name = Main.getBalanceName();
     static double initBalance = Main.getInitialBalance();
-
-    public static CheckingAccount checkingAccountObj;
+ 
+        public static CheckingAccount checkingAccountObj;
 
     
     JTextArea text = new JTextArea();
@@ -61,15 +63,17 @@ public class CheckingPanel extends JPanel implements Serializable {
     String message = "";
 
     DecimalFormat form;
+    
+    
+    public static boolean ifSaved = false;
+
 
     /*
      Constractor
      */
     public CheckingPanel() {
         
-        checkingAccountObj = new CheckingAccount(initBalance);
-        public static boolean ifSaved = false;
- public static void chooseFile(int ioOption);
+        checkingAccountObj = new CheckingAccount(name, initBalance);
 
         form = new DecimalFormat("$##,##0.00;($##,##0.00)");
 
@@ -185,7 +189,7 @@ public class CheckingPanel extends JPanel implements Serializable {
                 checkingAccountObj.setBalance(transactionCode, totalDeposit);
                 checkingAccountObj.setTotalServiceCharge(currentServiceCharge);
 
-                JOptionPane.showMessageDialog(null, Main.name + " account.\n"
+                JOptionPane.showMessageDialog(null, checkingAccountObj.name + " account.\n"
                         + "Transaction: " + transaction + " in amount of " + form.format(totalDeposit) + "\n"
                         + "Current Balance: " + form.format(checkingAccountObj.getBalance()) + "\n"
                         + "Service charge: " + transaction + " Charge--- " + form.format(currentServiceCharge) + "\n" + checkingAccountObj.message
@@ -229,7 +233,7 @@ public class CheckingPanel extends JPanel implements Serializable {
                         checkingAccountObj.setBalance(transactionCode, amount);
                         checkingAccountObj.setTotalServiceCharge(currentServiceCharge);
 
-                        JOptionPane.showMessageDialog(null, Main.name + " account.\n"
+                        JOptionPane.showMessageDialog(null, checkingAccountObj.name + " account.\n"
                                 + "Transaction: " + transaction + "#" + checkNumber + " in amount of " + form.format(amount) + "\n"
                                 + "Current Balance: " + form.format(checkingAccountObj.getBalance()) + "\n"
                                 + "Service charge: " + transaction + " Charge--- " + form.format(currentServiceCharge) + "\n" + checkingAccountObj.message
@@ -253,6 +257,7 @@ public class CheckingPanel extends JPanel implements Serializable {
                             + "\n Total Service Charge: " + form.format(checkingAccountObj.getTotalServiceCharge())
                             + "\n Final Balance: " + form.format(checkingAccountObj.finalBalance())
                             + "\n\n Date: " + Main.showDate());
+                    System.exit(0);
                 }
             }
 
@@ -260,7 +265,7 @@ public class CheckingPanel extends JPanel implements Serializable {
 
                 // show list of all transactions
                 text.setOpaque(false);
-                message = "Transactions List for \n"+ Main.name 
+                message = "Transactions List for \n"+ checkingAccountObj.name 
                         + "\n\nID \t Type \t\t\t Amount\n\n";
 
                 for (int i = 0; i < checkingAccountObj.getTransCount(); i++) {
@@ -273,7 +278,7 @@ public class CheckingPanel extends JPanel implements Serializable {
             if (source == radio3) {
                 // show list of all all cheks 
                 text.setOpaque(false);
-                message = "List All Checks for "+ Main.name + "\n\n"
+                message = "List All Checks for "+ checkingAccountObj.name + "\n\n"
                         + "ID \t Type \t Check Number \t Amount\n\n";
                 for (int i = 0; i < checkingAccountObj.getTransCount(); i++) {
                     if (checkingAccountObj.getTrans(i).getTransId().equals("Check")) {
@@ -286,7 +291,7 @@ public class CheckingPanel extends JPanel implements Serializable {
             if (source == radio4) {
                 // show list of all deposits
                 text.setOpaque(false);
-                message = "List All Deposits for " + Main.name + "\n\n"
+                message = "List All Deposits for " + checkingAccountObj.name + "\n\n"
                         + "ID \t Type \t\t      Checks \t   Cash \t     Amount\n\n";
                 for (int i = 0; i < checkingAccountObj.getTransCount(); i++) {
                     if (checkingAccountObj.getTrans(i).getTransId().equals("Deposit")) {
@@ -322,7 +327,11 @@ public class CheckingPanel extends JPanel implements Serializable {
     
     /*
     
-   THIS IS THE NEW CODE WITH I HAVE ADDED FOR ASSIGMENT 4 BESIDES, VARIBLE IN THE HEAD
+   THIS IS THE NEW CODE which I HAVE ADDED FOR ASSIGMENT 4 
+    BESIDES, VARIBLE IN THE HEAD.
+    Also, an windows listenr have added to Main menue,
+    Besides,     boolean ifSaved = false;   is created to track on if the user forget to 
+    save his file after modification, and if he did not add any transaction, will remains false. 
     */
     
     
@@ -332,18 +341,35 @@ public class CheckingPanel extends JPanel implements Serializable {
                 
       String  message = "Would you like to use the current default file: \n" + filename;
       confirm = JOptionPane.showConfirmDialog (null, message);
-      if (confirm == JOptionPane.YES_OPTION)
-          return;
-      JFileChooser chooser = new JFileChooser();
-      if (ioOption == 1)
+      
+     JFileChooser chooser = new JFileChooser();
+     
+      
+      
+  if(confirm == JOptionPane.YES_OPTION){
+            filename =filename;
+      }
+ 
+  if(confirm == JOptionPane.NO_OPTION){
+           if (ioOption == 1){
           status = chooser.showOpenDialog (null);
-      else
+        }else{
           status = chooser.showSaveDialog (null);
+      }
+
       if (status == JFileChooser.APPROVE_OPTION)
       {
           File file = chooser.getSelectedFile();
           filename = file.getPath();
       }
+     }
+
+      
+  if (confirm == JOptionPane.CANCEL_OPTION){
+         return;
+      }
+      
+      
    }
     
      
@@ -357,9 +383,8 @@ public class CheckingPanel extends JPanel implements Serializable {
 			FileInputStream fis = new FileInputStream(filename); 
 			ObjectInputStream in = new ObjectInputStream(fis);
                         
-                        
                         checkingAccountObj = (CheckingAccount)in.readObject();
-                        
+                        ifSaved = true;
 			in.close();
 		}	
 		catch(ClassNotFoundException | IOException e)	
@@ -372,14 +397,13 @@ public class CheckingPanel extends JPanel implements Serializable {
    public void writeElements() 
    {  
         chooseFile(2);
-        
       	try
 		{
 			FileOutputStream fos = new FileOutputStream(filename);   
 			ObjectOutputStream out = new  ObjectOutputStream(fos);
                         
                         out.writeObject(checkingAccountObj);
-                        
+                        ifSaved = true;
                         out.close();
 		}	
                     catch(IOException e)	
