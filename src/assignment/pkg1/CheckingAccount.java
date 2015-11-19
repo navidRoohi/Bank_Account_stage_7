@@ -7,6 +7,7 @@ package assignment.pkg1;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 public class CheckingAccount extends Account implements Serializable{
 
@@ -17,8 +18,13 @@ public class CheckingAccount extends Account implements Serializable{
     double transaction;
     public ArrayList<Transaction> transList = new ArrayList<>();
     
-    public CheckingAccount(double balance) {
-        super(balance);
+   public CheckingAccount(){
+       
+   }
+    
+    public CheckingAccount(String accName, double balance) {
+        super(accName, balance);
+        
     }
 
     public void setTotalServiceCharge(double currentServiceCharge) {
@@ -63,6 +69,7 @@ public class CheckingAccount extends Account implements Serializable{
     public void addTrans(Transaction t) {
         transList.add(t);
         transCount++;
+        CheckingPanel.ifSaved = false;
     }    
   public double getTotalServiceCharge() {
         return totalServiceCharge;
@@ -76,5 +83,7 @@ public class CheckingAccount extends Account implements Serializable{
     public int getTransCount() {
         return transCount;
     }
+    
+     
 
 }
