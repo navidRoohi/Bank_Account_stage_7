@@ -24,6 +24,10 @@ public class Main {
     public static JFrame frame;
     
     public static void main(String[] args) {
+        
+        CheckingPanel obj =  new CheckingPanel();
+        
+        /*
 
         frame = new JFrame("Hello");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -66,6 +70,8 @@ public class Main {
         // put the Jframe in the Center of the screen
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        */
 
     }
 
