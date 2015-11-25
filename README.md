@@ -1,4 +1,4 @@
-# Bank_Account_stage_6
+# Bank_Account_stage_7
 
 
 ![screen shot 2015-11-25 at 10 58 06 am](https://cloud.githubusercontent.com/assets/13104724/11406837/48971644-9364-11e5-9d05-4963f44fc071.png)
