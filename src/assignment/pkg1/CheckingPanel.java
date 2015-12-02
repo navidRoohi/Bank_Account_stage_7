@@ -5,6 +5,7 @@ package assignment.pkg1;
  * @author navidroohibroojeni
  */
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.*;
@@ -16,9 +17,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CheckingPanel extends JPanel implements Serializable {
 
@@ -27,8 +32,12 @@ public class CheckingPanel extends JPanel implements Serializable {
     private JMenu fileMenu;
     private JMenu accountMenu;
     private JMenu transactionMenu;
+    private JMenu helpMenu;
+
     private JMenuItem readFromFile;
     private JMenuItem writeToFile;
+    private JMenuItem exit;
+
     private JMenuItem addNewAccount;
     private JMenuItem listAccountTransaction;
     private JMenuItem listAllChecks;
@@ -36,11 +45,11 @@ public class CheckingPanel extends JPanel implements Serializable {
     private JMenuItem findAnAccount;
     private JMenuItem listAllAccount;
 
-    
     private JMenuItem addTransaction;
-    
+
+    private JMenuItem help;
+
     private JTextArea textArea;
-    
 
     // declear the file location that needs to write or read from 
     public static String filename = "/Users/navidroohibroojeni/Desktop/JAVA-DB-CLASS/lplp.dat";
@@ -63,28 +72,37 @@ public class CheckingPanel extends JPanel implements Serializable {
     double currentServiceCharge;
     int transactionCode;
 
-  
     public static CheckingAccount checkingAccountObj;
-
 
     String message = "";
 
     DecimalFormat form;
 
-    public static boolean ifSaved = false;
+    public static boolean ifSaved = true;
 
     ArrayList<CheckingAccount> listAllAccounts;
+    
+
     /*
      Constractor
      */
     public CheckingPanel() {
-        
-            listAllAccounts = new ArrayList<>();
 
-        menuFrame = new JFrame("Hello");
+        listAllAccounts = new ArrayList<>();
+
+        menuFrame = new JFrame("Welcome To The Transaction Account Service");
+
+        // ask user to save before calosing, if is not saved yet
         menuFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        menuFrame.addWindowListener(new WindowAdapter() {
+
+            public void windowClosing(WindowEvent ev) {
+
+                exit();
+            }
+        });
+
         menuFrame.setPreferredSize(new Dimension(450, 350));
-        
 
         buildMenuBar();
         menuFrame.pack();
@@ -102,31 +120,89 @@ public class CheckingPanel extends JPanel implements Serializable {
 
     }
 
+    public void exit() {
+        int response;
+
+        if (ifSaved) {
+            menuFrame.dispose();
+        }
+
+        if (!ifSaved) {
+            response = JOptionPane.showConfirmDialog(null, "Do you want to Save ? ", "Confirm",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (response == JOptionPane.NO_OPTION) {
+                menuFrame.dispose();
+            } else {
+
+                CheckingPanel.chooseFile(1);
+
+                menuFrame.dispose();
+                
+
+            }
+        }
+        
+        System.exit(0);
+
+    }
+
     private void buildMenuBar() {
         textArea = new JTextArea();
         textArea.setBackground(Color.ORANGE);
         textArea.setEditable(false);
-        
-       
+
         menuBar = new JMenuBar();
 
         buildFileMenu();
         buildAccountMenu();
         buildTransactionMenu();
+        buildHelpMenu();
 
         menuBar.add(fileMenu);
         menuBar.add(accountMenu);
         menuBar.add(transactionMenu);
+        menuBar.add(helpMenu);
 
         menuFrame.setJMenuBar(menuBar);
         menuFrame.add(textArea);
+    }
+
+    public void buildHelpMenu() {
+        help = new JMenuItem("Project Instructions");
+        help.addActionListener(new OpenUrlAction());
+        helpMenu = new JMenu("Help");
+        helpMenu.add(help);
+    }
+
+    //  browser listener 
+    class OpenUrlAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                
+                URI uri = new URI("http://www.elcamino.edu/faculty/gscott/JavaAsnG.htm"); 
+                open(uri);
+            } catch (URISyntaxException io) {
+                System.out.println(io);
+            }
+        }
+    }
+     //open the browser 
+    private static void open(URI uri) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(uri);
+            } catch (IOException e) {  }
+        } else { }
     }
 
     public void buildTransactionMenu() {
         addTransaction = new JMenuItem("Add Transaction");
 
         addTransaction.addActionListener(new addTransaction());
-        
+
         transactionMenu = new JMenu("Transaction");
 
         transactionMenu.add(addTransaction);
@@ -147,7 +223,7 @@ public class CheckingPanel extends JPanel implements Serializable {
         listAllDeposits.addActionListener(new listAllDeposits());
         findAnAccount.addActionListener(new findAnAccount());
         listAllAccount.addActionListener(new listAllAccount());
-        
+
         accountMenu = new JMenu("Account");
 
         accountMenu.add(addNewAccount);
@@ -162,33 +238,47 @@ public class CheckingPanel extends JPanel implements Serializable {
     private void buildFileMenu() {
         readFromFile = new JMenuItem("Read From File");
         writeToFile = new JMenuItem("Write to File");
+        exit = new JMenuItem("Exit");
 
         readFromFile.addActionListener(new readFromFileListener());
         writeToFile.addActionListener(new writeToFileListener());
+        exit.addActionListener(new exitListener());
 
         fileMenu = new JMenu("File");
-        
+
         fileMenu.add(readFromFile);
         fileMenu.add(writeToFile);
+        fileMenu.add(exit);
     }
-    
-    
-     public class listAllAccount implements ActionListener {
+
+    public class exitListener implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
-            
-            message = "";
-            
-            
-            for(int i=0; i<listAllAccounts.size();i++){
-                message  += listAllAccounts.get(i).getName()+ "\n";
-            }
-  
-            
-                              
-              textArea.setText(message);
 
-     
+            exit();
+        }
+    }
+
+    public class listAllAccount implements ActionListener {
+
+        public void actionPerformed(ActionEvent event) {
+
+            message = "";
+
+            ArrayList<String> listName = new ArrayList<>();
+
+            for (int i = 0; i < listAllAccounts.size(); i++) {
+                listName.add(listAllAccounts.get(i).getName());
+            }
+            // sort the list
+            Collections.sort(listName);
+
+            for (int p = 0; p < listAllAccounts.size(); p++) {
+                message += listName.get(p) + "\n";
+            }
+
+            textArea.setText(message);
+
         }
     }
 
@@ -196,31 +286,35 @@ public class CheckingPanel extends JPanel implements Serializable {
 
         public void actionPerformed(ActionEvent event) {
             
-            message = "";
-            String input = JOptionPane.showInputDialog("Please Enter Account's Name holder: ");
-            
-             for(int i=0; i<listAllAccounts.size();i++){
-                if (input.equals(listAllAccounts.get(i).getName())){
-                    // show list of all transactions
-            message = "Transactions List for \n" + input
-                    + "\n\nID \t Type \t\t\t Amount\n\n";
+            ifSaved = false;
 
-            for (int p = 0; p < listAllAccounts.get(i).getTransCount(); p++) {
-                message += listAllAccounts.get(i).getTrans(p).toString() + "\n";
-                
-            }
-            
-            textArea.setText(message);
+            String input = JOptionPane.showInputDialog("Please Enter Account's Name holder: ");
+
+            for (int i = 0; i < listAllAccounts.size(); i++) {
+                if (input.equals(listAllAccounts.get(i).getName())) {
+                    // show list of all transactions
+                     message = "Account: " + input
+                    + "\nBalance: $" + listAllAccounts.get(i).getBalance()
+                    + "\nTotal Service Charge: $" + listAllAccounts.get(i).getTotalServiceCharge()
+                    + "\n\nList of All transactions:  \n\n";
+            message += "ID \t Type \t\t\t Amount\n";
+
+                    for (int p = 0; p < listAllAccounts.get(i).getTransCount(); p++) {
+                        message += listAllAccounts.get(i).getTrans(p).toString() + "\n";
+
+                    }
+
+                    textArea.setText(message);
+                    
+                    // update the account to one is searched
+                    checkingAccountObj =  listAllAccounts.get(i);
                 }
             }
+            
             
 
         }
     }
-    
-    
-    
-    
 
     private class listAllDeposits implements ActionListener {
 
@@ -234,10 +328,8 @@ public class CheckingPanel extends JPanel implements Serializable {
                     message += checkingAccountObj.getTrans(i).toStringDeposit() + "\n";
                 }
             }
-            
 
-                       textArea.setText(message);
-
+            textArea.setText(message);
 
         }
     }
@@ -254,7 +346,7 @@ public class CheckingPanel extends JPanel implements Serializable {
                     message += checkingAccountObj.getTrans(i).toStringCheck() + "\n";
                 }
             }
-                        textArea.setText(message);
+            textArea.setText(message);
         }
     }
 
@@ -263,14 +355,19 @@ public class CheckingPanel extends JPanel implements Serializable {
         public void actionPerformed(ActionEvent event) {
 
             // show list of all transactions
-            message = "Transactions List for \n" + checkingAccountObj.name
-                    + "\n\nID \t Type \t\t\t Amount\n\n";
+            
+            message = "Account: " + checkingAccountObj.getName()
+                    + "\nBalance: " + form.format(checkingAccountObj.getBalance())
+                    + "\nTotal Service Charge: " + form.format(checkingAccountObj.getTotalServiceCharge())
+                    + "\n\nList of All transactions:  \n\n";
+            message += "ID \t Type \t\t\t Amount\n";
 
             for (int i = 0; i < checkingAccountObj.getTransCount(); i++) {
                 message += checkingAccountObj.getTrans(i).toString() + "\n";
-                
+
             }
             
+
             textArea.setText(message);
 
         }
@@ -279,14 +376,14 @@ public class CheckingPanel extends JPanel implements Serializable {
     private class addNewAccount implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
-            
-              String name = Main.getBalanceName();
-              double initBalance = Main.getInitialBalance();
-             
+            ifSaved = false;
+
+            String name = Main.getBalanceName();
+            double initBalance = Main.getInitialBalance();
+
             checkingAccountObj = new CheckingAccount(name, initBalance);
 
             listAllAccounts.add(checkingAccountObj);
-
 
         }
     }
@@ -294,6 +391,7 @@ public class CheckingPanel extends JPanel implements Serializable {
     private class addTransaction implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
+            ifSaved = false;
 
             // get tansaction code
             transactionCode = Main.getTransCode();
@@ -387,6 +485,7 @@ public class CheckingPanel extends JPanel implements Serializable {
     private class EOptionListener2 implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
+            ifSaved = false;
 
             Object source = event.getSource();
             if (source == okBtn) {
@@ -467,30 +566,42 @@ public class CheckingPanel extends JPanel implements Serializable {
     }
 
     private class readFromFileListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
             readElements();
         }
     }
 
     private class writeToFileListener implements ActionListener {
-
         public void actionPerformed(ActionEvent event) {
-            readElements();
+            writeElements();
         }
     }
 
-    public static void readElements() {
+    public void readElements() {
         chooseFile(1);
         try {
             FileInputStream fis = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fis);
 
-            checkingAccountObj = (CheckingAccount) in.readObject();
+            // there is a problem here  :-O
+            
+            // checkingAccountObj
+            // listAllAccounts.add((CheckingAccount)in.readObject());
+           
+            CheckingAccount object;
+            do{
+                object = (CheckingAccount)in.readObject();
+                listAllAccounts.add(object);
+            } while (object != null);
+
+            
+            
             ifSaved = true;
             in.close();
-        } catch (ClassNotFoundException | IOException e) {
+        } catch (IOException e) {
             System.out.println(e);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CheckingPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -500,7 +611,17 @@ public class CheckingPanel extends JPanel implements Serializable {
             FileOutputStream fos = new FileOutputStream(filename);
             ObjectOutputStream out = new ObjectOutputStream(fos);
 
-            out.writeObject(checkingAccountObj);
+               for (int i =0; i< listAllAccounts.size() ; i++){
+                     out.writeObject(listAllAccounts.indexOf(i));
+               } 
+                  
+            
+            
+            
+            // out.writeObject(listAllAccounts);
+            
+            
+            
             ifSaved = true;
             out.close();
         } catch (IOException e) {
