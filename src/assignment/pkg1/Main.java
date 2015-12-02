@@ -4,8 +4,6 @@ import javax.swing.JOptionPane;
 import java.util.Date;
 import javax.swing.*;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 /**
  *
  * @author navidroohibroojeni
@@ -26,53 +24,7 @@ public class Main {
     public static void main(String[] args) {
         
         CheckingPanel obj =  new CheckingPanel();
-        
-        /*
-
-        frame = new JFrame("Hello");
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-        frame.addWindowListener(new WindowAdapter() {
-            
-            public void windowClosing(WindowEvent ev) {
-               int response;
-                        CheckingPanel objN =  new CheckingPanel();
-
-                      
-                        
-                if (objN.ifSaved){
-                              frame.dispose();
-                            } 
-                
-                if (!objN.ifSaved){
-                    response  = JOptionPane.showConfirmDialog(null, "Do you want to Save ? ", "Confirm",
-                                                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-      
-                         if  (response == JOptionPane.NO_OPTION) {
-                                    frame.dispose();
-                         } else {
-
-                            CheckingPanel.chooseFile(1);
-                           
-                         frame.dispose();
-                        
-                 } 
-                }
-    
-            }
-        });
-
-   
-        
-        panel = new CheckingPanel();
-        frame.getContentPane().add(panel);
-        frame.pack();
-        // put the Jframe in the Center of the screen
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        
-        */
-
+ 
     }
 
     public static int getTransCode() {
