@@ -18,6 +18,7 @@ public class CheckingAccount extends Account implements Serializable{
     double transaction;
     public ArrayList<Transaction> transList = new ArrayList<>();
     
+    
    public CheckingAccount(){
        
    }
@@ -26,6 +27,9 @@ public class CheckingAccount extends Account implements Serializable{
         super(accName, balance);
         
     }
+    
+   
+    
 
     public void setTotalServiceCharge(double currentServiceCharge) {
 
@@ -69,7 +73,6 @@ public class CheckingAccount extends Account implements Serializable{
     public void addTrans(Transaction t) {
         transList.add(t);
         transCount++;
-        CheckingPanel.ifSaved = false;
     }    
   public double getTotalServiceCharge() {
         return totalServiceCharge;
