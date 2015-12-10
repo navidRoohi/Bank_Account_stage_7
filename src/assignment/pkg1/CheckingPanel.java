@@ -80,7 +80,7 @@ public class CheckingPanel extends JPanel implements Serializable {
 
     public static boolean ifSaved = true;
 
-    ArrayList<CheckingAccount> listAllAccounts;
+    public static ArrayList<CheckingAccount> listAllAccounts;
     
 
     /*
@@ -577,7 +577,7 @@ public class CheckingPanel extends JPanel implements Serializable {
         }
     }
 
-    public void readElements() {
+    public  static void readElements() {
         chooseFile(1);
         try {
             FileInputStream fis = new FileInputStream(filename);
