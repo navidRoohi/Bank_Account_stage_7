@@ -1,60 +1,62 @@
+package assignment.pkg1;
+
+import javax.swing.JOptionPane;
+import java.util.Date;
+import javax.swing.*;
+
 /**
  *
  * @author navidroohibroojeni
  */
-package assignment.pkg1;
+public class Main {
 
-import java.io.Serializable;
+    // Global variables
+    static String transaction;
+    static double initBalance;
+    static int transactionCode;
+    static double currentServiceCharge;
 
-public class Transaction implements Serializable{
 
-    // current value of the transCount
-    private int transNumber;
-    //  id ( 1=check  /  2=deposit   / 3 = service charge)
-    private int transId;
-    private double transAmt;
+    public static CheckingPanel panel;
 
-    public Transaction(int number, int id, double amount) {
-        transNumber = number;
-        transId = id;
-        transAmt = amount;
+    public static JFrame frame;
+    
+    public static void main(String[] args) {
+        
+        CheckingPanel obj =  new CheckingPanel();
+ 
     }
 
-    public int getTransNumber() {
-        return transNumber;
+    public static int getTransCode() {
+        String tranC = JOptionPane.showInputDialog("Enter The Transaction Code "
+                + "\n 1 for Check \n 2 for deposit \n 0 for exit");
+        transactionCode = Integer.parseInt(tranC);
+
+        return transactionCode;
     }
 
-    public String getTransId() {
-
-        String type = "";
-
-        if (transId == 1) {
-            type = "Check";
-        }
-        if (transId == 2) {
-            type = "Deposit";
-        }
-        if (transId == 3) {
-            type = "Svc. Charg.";
-        }
-        return type;
+    public static double checkAmount() {
+        String depA = JOptionPane.showInputDialog("Enter check amount: ");
+        double checkAm = Double.parseDouble(depA);
+        return checkAm;
     }
 
-    public double getTransAmt() {
-        return transAmt;
+    public static String showDate() {
+        Date date = new Date();
+        return date.toString();
     }
 
-    @Override
-    public String toString() {
-        return String.format("%2d\t%-10s\t\t$%8.2f", getTransNumber(), getTransId(), getTransAmt());
+    public static double getInitialBalance() {
+        String initB = JOptionPane.showInputDialog("Enter The Initial Balance: ");
+        initBalance = Double.parseDouble(initB);
+
+        return initBalance;
     }
 
-    public String toStringDeposit() {
-        return "";
-    }
-
-    public String toStringCheck() {
-        return "";
+   public static String getBalanceName() {
+        String input = JOptionPane.showInputDialog("Enter the Name: ");
+         String name = input;
+        return name;
     }
 
 }
